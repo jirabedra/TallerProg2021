@@ -1,0 +1,16 @@
+ul {
+    list-style-type: none;
+}
+
+#menu {
+	text-align: center;
+}
+
+#menu li {
+	display: inline;
+	font-size: 20px;
+	padding: 15px;
+}
+#comentar {
+	visibility: hidden;
+}

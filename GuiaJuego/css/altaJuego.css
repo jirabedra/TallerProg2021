@@ -1,0 +1,12 @@
+#menu {
+	text-align: center;
+}
+
+#menu li {
+	display: inline;
+	font-size: 20px;
+	padding: 15px;
+}
+ul {
+    list-style-type: none;
+}
