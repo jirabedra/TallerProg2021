@@ -27,6 +27,8 @@ ul {
 
 #menu {
 	text-align: center;
+        padding: 10px;
+        margin:10px;
 }
 
 #menu li {

@@ -10,7 +10,7 @@
         <div id="menu">
 			<a href="#">Página principal</a>
                         {if isset($usuarioLogueado)}
-                            Hola, {$usuarioLogueado.nombre} <a href="./doLogout.php">Logout</a>
+                            Hola, {$usuarioLogueado} <a href="./doLogout.php">Logout</a>
                             <a href="./nuevaCategoria.php">Nueva Categoría</a>
                         {else}
                              <a href="./login.php">Inicio de sesión</a>

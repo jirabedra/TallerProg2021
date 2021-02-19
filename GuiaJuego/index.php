@@ -5,6 +5,8 @@
     session_start();
     $mySmarty = getSmarty();
     
+
+    
     $usuarioLogueado = NULL;
     if(isset($_SESSION['usuarioLogueado'])) {
         $usuarioLogueado = $_SESSION['usuarioLogueado'];
