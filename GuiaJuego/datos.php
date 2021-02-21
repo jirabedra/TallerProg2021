@@ -122,7 +122,7 @@ function getProducto($id) {
 function login($usuario, $clave) {
 
     $conexion = abrirConexion();
-    $sql = "SELECT alias FROM usuarios WHERE email=:usuario AND password=:clave";
+    $sql = "SELECT * FROM usuarios WHERE email=:usuario AND password=:clave";
     $sentencia = $conexion->prepare($sql);
     $sentencia->bindParam("clave", $clave, PDO::PARAM_STR);
     $sentencia->bindParam("usuario", $usuario, PDO::PARAM_STR);
@@ -132,6 +132,7 @@ function login($usuario, $clave) {
 
 function logout() {
     unset($_SESSION['usuarioLogueado']);
+    setCookie("esAdmin", null, time());
     session_destroy();
 }
 
@@ -143,4 +144,40 @@ function getSmarty() {
     $mySmarty->config_dir = 'Config';
 
     return $mySmarty;
+}
+
+function guardarUsuario($usuario, $clave, $alias) {
+    $conexion = abrirConexion();
+    $sql = 'INSERT INTO usuarios(email, password, alias) VALUES (:usuario, :clave, :alias)';
+    $sentencia = $conexion->prepare($sql);
+    $sentencia->bindParam("usuario", $usuario, PDO::PARAM_STR);
+    $sentencia->bindParam("clave", $clave, PDO::PARAM_STR);
+    $sentencia->bindParam("alias", $alias, PDO::PARAM_STR);
+    $resultado = $sentencia->execute();
+    if ($resultado) {
+        return true;
+    } else {
+        return false;
+    };
+}
+
+function guardarJuego($nombre,  $poster, $fecha, $resumen, $empresa, $link) {
+    $conexion = abrirConexion();
+    $sql = 'INSERT INTO juegos(nombre, id_genero, fecha_lanzamiento, resumen, empresa, url_video) VALUES (:nombre, 1, :fecha, :resumen, :empresa, :link)';
+    $sentencia = $conexion->prepare($sql);
+    $sentencia->bindParam("nombre", $nombre, PDO::PARAM_STR);
+    $sentencia->bindParam("fecha", $fecha, PDO::PARAM_STR);
+    $sentencia->bindParam("resumen", $resumen, PDO::PARAM_STR);
+    $sentencia->bindParam("empresa", $empresa, PDO::PARAM_STR);
+    $sentencia->bindParam("link", $link, PDO::PARAM_STR);
+    $resultado = $sentencia->execute();
+    /*$id = $conexion->ultimoIdInsert();
+    if (is_uploaded_file($poster)) {
+        move_uploaded_file($poster, "./img_productos/" . $id);
+    }*/
+    if ($resultado) {
+        return true;
+    } else {
+        return false;
+    };
 }

@@ -8,7 +8,13 @@ $clave = $_POST["clave"];
 
 
 $usuarioLogueado = login($usuario, $clave)["alias"];
-//print_r($usuarioLogueado);
+$esAdmin = login($usuario, $clave)["es_admin"];
+
+if($esAdmin == 1){
+    setCookie('soyAdmin', $esAdmin, time() + (60*60*24));
+} else {
+     setCookie('soyAdmin', $esAdmin, time() + (60*60*24));
+}
 
 
 if (isset($usuarioLogueado) && strlen($usuarioLogueado) > 0) {
@@ -17,4 +23,8 @@ if (isset($usuarioLogueado) && strlen($usuarioLogueado) > 0) {
     header('location:index.php');
 } else {
     header('location:login.php?err=1');
+}
+
+function dejarDeSerAdmin(){
+    setCookie('soyAdmin', null, time());
 }

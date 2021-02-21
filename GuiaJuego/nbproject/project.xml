@@ -6,6 +6,7 @@
             <name>GuiaJuego</name>
         </data>
         <spellchecker-wordlist xmlns="http://www.netbeans.org/ns/spellchecker-wordlist/1">
+            <word>Nombre</word>
             <word>tienda</word>
             <word>Usuario</word>
         </spellchecker-wordlist>

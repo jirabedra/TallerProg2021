@@ -11,15 +11,16 @@
 			<a href="#">Página principal</a>
                         {if isset($usuarioLogueado)}
                             Hola, {$usuarioLogueado} <a href="./doLogout.php">Logout</a>
-                            <a href="./nuevaCategoria.php">Nueva Categoría</a>
+                            {if ($smarty.cookies.soyAdmin == 1)}
+                                 <a href="./altaJuego.php">Nuevo juego</a>
+                            {/if}
                         {else}
                              <a href="./login.php">Inicio de sesión</a>
+                             <a href="./registro.php">Registrarme</a>
                         {/if}
 			<a href="./contacto.html">Contacto</a>
 		</div>
-                       
-
-		
+                      
 		</div>
                 <div id="buscador">
                     
