@@ -10,8 +10,8 @@
 	</head>
 	<body>
             <form action="doLogin.php" method="POST">
-                Usuario: <input type="text" name="usuario" /><br>
-                Clave: <input type="password" name="clave" /><br>
+                Usuario: <input required type="text" name="usuario" /><br>
+                Clave: <input  required type="password" name="clave" /><br>
                 <input type="submit" value="Ingresar" />
                 <?php 
                     if(isset($_GET["err"])) {

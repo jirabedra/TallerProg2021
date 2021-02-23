@@ -33,7 +33,7 @@ function abrirConexion2() {
 function getCategorias() {
     $conexion = abrirConexion2();
 
-    $sql = "SELECT * FROM consolas";
+    $sql = "SELECT * FROM generos";
     $conexion->consulta($sql);
 
     return $conexion->restantesRegistros();
@@ -119,6 +119,37 @@ function getProducto($id) {
     return $producto;
 }
 
+function getComentariosDeJuego($id) {
+    $conexion = abrirConexion();
+    $sql = "SELECT * FROM comentarios WHERE id_juego=:id";
+    $sentencia = $conexion->prepare($sql);
+    $sentencia->bindParam("id_juego", $id, PDO::PARAM_INT);
+    $sentencia->execute();
+    return $sentencia->fetch(PDO::FETCH_ASSOC);
+}
+
+function getTodosLosProductosDeGenero($id) {
+    $conexion = abrirConexion();
+    $sql = "SELECT * FROM juegos WHERE id_genero=:id";
+    $sentencia = $conexion->prepare($sql);
+    $sentencia->bindParam("id_juego", $id, PDO::PARAM_INT);
+    $sentencia->execute();
+    return $sentencia->fetch(PDO::FETCH_ASSOC);
+}
+
+function getTodosLosProductosDeConsola($id) {
+    $conexion = abrirConexion();
+    $sql = "SELECT juegos . *
+FROM juegos_consolas
+INNER JOIN consolas ON ( juegos_consolas.id_consola = consolas.id )
+INNER JOIN juegos ON ( juegos_consolas.id_juego = juegos.id )
+WHERE consolas.id=:id";
+    $sentencia = $conexion->prepare($sql);
+    $sentencia->bindParam("id", $id, PDO::PARAM_INT);
+    $sentencia->execute();
+    return $sentencia->fetch(PDO::FETCH_ASSOC);
+}
+
 function login($usuario, $clave) {
 
     $conexion = abrirConexion();
@@ -161,20 +192,55 @@ function guardarUsuario($usuario, $clave, $alias) {
     };
 }
 
-function guardarJuego($nombre,  $poster, $fecha, $resumen, $empresa, $link) {
+function getIdGeneroPorNombre($genero){
     $conexion = abrirConexion();
-    $sql = 'INSERT INTO juegos(nombre, id_genero, fecha_lanzamiento, resumen, empresa, url_video) VALUES (:nombre, 1, :fecha, :resumen, :empresa, :link)';
+    $sql = "SELECT * FROM generos WHERE nombre=:genero";
+    $sentencia = $conexion->prepare($sql);
+    $sentencia->bindParam("genero", $genero, PDO::PARAM_STR);
+    $sentencia->execute();
+    return $sentencia->fetch(PDO::FETCH_ASSOC);
+}
+
+function guardarJuego($nombre, $genero, $poster, $fecha, $resumen, $empresa, $link, $tipoPoster) {
+    $idGenero = getIdGeneroPorNombre($genero)["id"];
+    $conexion = abrirConexion();
+    $sql = 'INSERT INTO juegos(nombre, id_genero, fecha_lanzamiento, resumen, empresa, url_video) VALUES (:nombre, :genero, :fecha, :resumen, :empresa, :link)';
     $sentencia = $conexion->prepare($sql);
     $sentencia->bindParam("nombre", $nombre, PDO::PARAM_STR);
+    $sentencia->bindParam("genero", $idGenero, PDO::PARAM_INT);
     $sentencia->bindParam("fecha", $fecha, PDO::PARAM_STR);
     $sentencia->bindParam("resumen", $resumen, PDO::PARAM_STR);
     $sentencia->bindParam("empresa", $empresa, PDO::PARAM_STR);
     $sentencia->bindParam("link", $link, PDO::PARAM_STR);
     $resultado = $sentencia->execute();
-    /*$id = $conexion->ultimoIdInsert();
+    $pattern1 = "/jpeg/i";
+    $pattern2 = "/png/i";
+    $pattern3 = "/jpg/i";
+    if (preg_match($pattern1, $tipoPoster)) {
+        $tipoPoster = "jpeg";
+    }
+    if (preg_match($pattern2, $tipoPoster)) {
+        $tipoPoster = "png";
+    }
+    if (preg_match($pattern3, $tipoPoster)) {
+        $tipoPoster = "jpg";
+    }
+    $id = $conexion->lastInsertId();
     if (is_uploaded_file($poster)) {
-        move_uploaded_file($poster, "./img_productos/" . $id);
-    }*/
+        move_uploaded_file($poster, "./img_productos/" . $id . '.' . $tipoPoster);
+        $nombrePoster = $id . '.' . $tipoPoster;
+        $sql = 'UPDATE juegos SET poster=:nombrePoster WHERE id=:id';
+        $sentencia = $conexion->prepare($sql);
+        $sentencia->bindParam("nombrePoster", $nombrePoster, PDO::PARAM_STR);
+        $sentencia->bindParam("id", $id, PDO::PARAM_INT);
+        $sentencia->execute();
+    }
+    /*
+     * dejar nombres de archivos con algun tipo de estandar. 
+     * obtener con $_FILES[nombre]["type"] obtenemos si es .png o png o como sea, y concatenamos al nombre del archivo
+     * persistirlas tanto localmente como en bd con este nombre que va a ser el id.tipoArchivo o nombre.tipoArchivo
+     * una opcion es, dsp del insert, agregar un update que cambie el nombre del poster.
+     */
     if ($resultado) {
         return true;
     } else {

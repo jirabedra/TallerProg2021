@@ -30,6 +30,8 @@
     $productos = getProductosDeCategoria($catId);
     $consolas = getConsolas();
     
+    $_SESSION['categorias'] = $categorias;
+    
     $mySmarty->assign("usuarioLogueado", $usuarioLogueado);
     $mySmarty->assign("categorias", $categorias);
     $mySmarty->assign("categoria", $categoria);

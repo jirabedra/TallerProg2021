@@ -10,9 +10,9 @@
 	</head>
 	<body>
             <form action="doRegistro.php" method="POST">
-                Email: <input type="text" name="usuario" /><br>
-                Clave: <input type="password" name="clave" /><br>
-                Alias: <input type="text" name="alias" /><br>
+                Email: <input required type="text" name="usuario" /><br>
+                Clave: <input required type="password" name="clave" /><br>
+                Alias: <input required type="text" name="alias" /><br>
                 <input type="submit" value="Ingresar" />
                 <?php 
                     if(isset($_GET["err"]) && $_GET["err"]==1) {

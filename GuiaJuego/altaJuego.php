@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <?php 
     require_once 'datos.php';
+    session_start();
+    error_reporting(E_ERROR);
+
 ?>
 <html>
 	<head>
@@ -9,10 +12,19 @@
 		<link rel="stylesheet" href="./css/ventas.css" type="text/css">
 	</head>
 	<body>
-            <form action="doAltaJuego.php" method="POST">
-                Nombre: <input type="text" name="nombre" /><br>
-                Genero: <select name="generos">
-                    <option>aaaaa</option>
+            <form action="doAltaJuego.php" method="POST" enctype="multipart/form-data">
+                Nombre: <input required type="text" name="nombre" /><br>
+                Genero: <select name="genero">
+                <?php
+                $categorias = $_SESSION['categorias'];
+                print_r($categorias);
+                foreach ($categorias as $cat) {
+                echo '<option value="' .$cat["nombre"] . '">' . $cat["nombre"] . '</option>';
+                }
+                ?>
+				
+                         
+                      
                     </select>/><br>
                 Poster: <input type="file" accept=".jpg,.png" name="poster" /><br> 
                 Fecha de lanzamiento: <input type="date" name="fecha" /><br>
@@ -25,9 +37,6 @@
                     if(isset($_GET["err"]) && $_GET["err"]==1) {
                         echo('<label>Juego ya existente.</label>');
                         echo($_GET["err"]);
-                    }
-                    if(isset($_GET["err"]) && $_GET["err"]==2) {
-                        echo('<label>La contraseña debe tener 8 caracteres o más.</label>');
                     }
                 ?>
             </form>

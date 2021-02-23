@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <?php 
     ini_set('display_errors', 1);
+    error_reporting(E_ERROR);
     require_once 'datos.php';
 ?>
 <html>
 	<head>
 		<meta charset="utf-8" lang="es">
-		<title>Tu Tienda Online</title>
+		<title>Guia de juegos</title>
 		<link rel="stylesheet" href="./css/ventas.css" type="text/css">
 	</head>
 	<body>

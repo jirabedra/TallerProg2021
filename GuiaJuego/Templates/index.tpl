@@ -35,12 +35,9 @@
                         <label class="genero-filtro-label" for="texto-filtro">Generos:</label>
 
 			<select class="genero-filtro">
-				<option value="Todos">Todos</option>
-				<option value="Infantiles">Infantiles</option>
-				<option value="Suspenso">Suspenso</option>
-				<option value="Acción">Acción</option>
-  				<option value="Indie">Indie</option>
-  				<option value="Terror">Terror</option>
+				{foreach from=$categorias item=cat}
+				<option value={$cat.nombre}>{$cat.nombre}</option>
+                            {/foreach}
 			</select>
                         
 			<label for="buscar">Ingresa tu búsqueda: </label>

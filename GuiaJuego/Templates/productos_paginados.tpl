@@ -1,7 +1,7 @@
 
 <h3>{$categoria.nombre}</h3>
 
-{foreach from=$peliculas item=pelicula}
+{foreach from=$productos item=producto}
     {include file="tarjeta_producto.tpl" pelicula=$pelicula}
 {/foreach}
 <div id="paginacion">
