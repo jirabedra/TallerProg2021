@@ -6,7 +6,6 @@ ini_set('display_errors',1);
 $usuario = $_POST["usuario"];
 $clave = $_POST["clave"];
 
-
 $usuarioLogueado = login($usuario, $clave)["alias"];
 $esAdmin = login($usuario, $clave)["es_admin"];
 
@@ -15,7 +14,6 @@ if($esAdmin == 1){
 } else {
      setCookie('soyAdmin', $esAdmin, time() + (60*60*24));
 }
-
 
 if (isset($usuarioLogueado) && strlen($usuarioLogueado) > 0) {
     session_start();

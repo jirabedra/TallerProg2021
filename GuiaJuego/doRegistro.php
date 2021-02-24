@@ -8,7 +8,6 @@ $clave = $_POST["clave"];
 $alias = $_POST["alias"];
 
 
-
 registrarUsuario($usuario, $clave, $alias);
 
 //VER CALCULO DE SEGURIDAD

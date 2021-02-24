@@ -25,6 +25,7 @@ class ConexionBD
 		$this->debugMode = $debug;
 	}
 
+        
 	/*
 	 *	Método que establece la conexión con los datos pasados al constructor
 	 */

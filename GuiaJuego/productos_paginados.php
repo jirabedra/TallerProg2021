@@ -21,7 +21,7 @@ if (isset($_GET["pag"])) {
     $pag = $_GET["pag"];
 }
 
-$categoria = getCategoria($catId);
+$categoria = getGeneroPorId($catId);
 if (isset($categoria)) {
     setcookie("ultimaCategoria", $catId, time() + (60 * 60 * 24), "/");
 }
@@ -34,3 +34,4 @@ $mySmarty->assign("paginas", cantidadPaginasCategoria($catId, $_GET['busqueda'])
 
 # mostrar el template
 $mySmarty->display('productos_paginados.tpl');
+

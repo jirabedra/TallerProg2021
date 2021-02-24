@@ -1,63 +1,134 @@
 <?php
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 require_once 'class.Conexion.BD.php';
 require_once './libs/Smarty.class.php';
 
 function abrirConexion() {
     $usuario = "root";
     $clave = "root";
-
     $conexion = new PDO("mysql:host=localhost;dbname=catalogo_juegos", $usuario, $clave);
-
-    //$conexion->conectar(); 
-
     return $conexion;
 }
 
 function abrirConexion2() {
     $usuario = "root";
     $clave = "root";
-
     $conexion = new ConexionBD("mysql", "localhost", "catalogo_juegos", $usuario, $clave);
-
     $conexion->conectar();
-
     return $conexion;
 }
 
-function getCategorias() {
+function getGeneros() {
     $conexion = abrirConexion2();
-
     $sql = "SELECT * FROM generos";
     $conexion->consulta($sql);
-
     return $conexion->restantesRegistros();
-    //return $categorias;
 }
 
 function getConsolas() {
     $conexion = abrirConexion2();
-
     $sql = "SELECT * FROM consolas";
     $conexion->consulta($sql);
-
     return $conexion->restantesRegistros();
 }
 
-function getCategoria($id) {
+function getNombreConsolas() {
     $conexion = abrirConexion();
-    $sql = "SELECT * FROM categorias WHERE id = :id";
+    $sql = "SELECT nombre FROM consolas";
+    $sentencia = $conexion->prepare($sql);
+    $sentencia->execute();
+    $categoria = $sentencia->fetchAll();
+    return $categoria;
+}
+
+function getGeneroPorId($id) {
+    $conexion = abrirConexion();
+    $sql = "SELECT * FROM generos WHERE id = :id";
     $sentencia = $conexion->prepare($sql);
     $sentencia->bindParam("id", $id, PDO::PARAM_INT);
     $sentencia->execute();
     $categoria = $sentencia->fetch(PDO::FETCH_ASSOC);
-
     return $categoria;
+}
+
+function getIdConsolaElPorNombre($nombre) {
+    $conexion = abrirConexion();
+    $sql = "SELECT id FROM consolas WHERE nombre = :nombre";
+    $sentencia = $conexion->prepare($sql);
+    $sentencia->bindParam("nombre", $nombre, PDO::PARAM_STR);
+    $sentencia->execute();
+    $categoria = $sentencia->fetch();
+    return $categoria;
+}
+
+function getProducto($id) {
+    $producto = NULL;
+    foreach (getGeneros() as $cat) {
+        foreach (getProductosDeCategoria($cat["id"]) as $prod) {
+            if ($prod["id"] == $id) {
+                $producto = $prod;
+            }
+        }
+    }
+    return $producto;
+}
+
+function getComentariosDeJuego($id) {
+    $conexion = abrirConexion();
+    $sql = "SELECT * FROM comentarios WHERE id_juego=:id";
+    $sentencia = $conexion->prepare($sql);
+    $sentencia->bindParam("id_juego", $id, PDO::PARAM_INT);
+    $sentencia->execute();
+    return $sentencia->fetch(PDO::FETCH_ASSOC);
+}
+
+function getTodosLosJuegos() {
+    $conexion = abrirConexion();
+    $sql = "SELECT * FROM juegos";
+    $sentencia = $conexion->prepare($sql);
+    $sentencia->execute();
+    return $sentencia->fetchAll(PDO::FETCH_ASSOC);
+}
+
+function getTodosLosJuegosDeGenero($id) {
+    $conexion = abrirConexion();
+    $sql = "SELECT * FROM juegos WHERE id_genero=:id";
+    $sentencia = $conexion->prepare($sql);
+    $sentencia->bindParam("id_juego", $id, PDO::PARAM_INT);
+    $sentencia->execute();
+    return $sentencia->fetchAll(PDO::FETCH_ASSOC);
+}
+
+function getTodosLosProductosDeConsola($id) {
+    $conexion = abrirConexion();
+    $sql = "SELECT juegos . *
+FROM juegos_consolas
+INNER JOIN consolas ON ( juegos_consolas.id_consola = consolas.id )
+INNER JOIN juegos ON ( juegos_consolas.id_juego = juegos.id )
+WHERE consolas.id=:id";
+    $sentencia = $conexion->prepare($sql);
+    $sentencia->bindParam("id", $id, PDO::PARAM_INT);
+    $sentencia->execute();
+    return $sentencia->fetch(PDO::FETCH_ASSOC);
+}
+
+function getIdGeneroPorNombre($genero) {
+    $conexion = abrirConexion();
+    $sql = "SELECT * FROM generos WHERE nombre=:genero";
+    $sentencia = $conexion->prepare($sql);
+    $sentencia->bindParam("genero", $genero, PDO::PARAM_STR);
+    $sentencia->execute();
+    return $sentencia->fetch(PDO::FETCH_ASSOC);
+}
+
+function getSmarty() {
+    $mySmarty = new Smarty();
+    $mySmarty->template_dir = 'Templates';
+    $mySmarty->compile_dir = 'Templates_c';
+    $mySmarty->cache_dir = 'Cache';
+    $mySmarty->config_dir = 'Config';
+
+    return $mySmarty;
 }
 
 function guardarCategoria($nombre) {
@@ -106,50 +177,6 @@ function getProductosDeCategoria($idCategoria) {
     return $productos;
 }
 
-function getProducto($id) {
-    $producto = NULL;
-    foreach (getCategorias() as $cat) {
-        foreach (getProductosDeCategoria($cat["id"]) as $prod) {
-            if ($prod["id"] == $id) {
-                $producto = $prod;
-            }
-        }
-    }
-
-    return $producto;
-}
-
-function getComentariosDeJuego($id) {
-    $conexion = abrirConexion();
-    $sql = "SELECT * FROM comentarios WHERE id_juego=:id";
-    $sentencia = $conexion->prepare($sql);
-    $sentencia->bindParam("id_juego", $id, PDO::PARAM_INT);
-    $sentencia->execute();
-    return $sentencia->fetch(PDO::FETCH_ASSOC);
-}
-
-function getTodosLosProductosDeGenero($id) {
-    $conexion = abrirConexion();
-    $sql = "SELECT * FROM juegos WHERE id_genero=:id";
-    $sentencia = $conexion->prepare($sql);
-    $sentencia->bindParam("id_juego", $id, PDO::PARAM_INT);
-    $sentencia->execute();
-    return $sentencia->fetch(PDO::FETCH_ASSOC);
-}
-
-function getTodosLosProductosDeConsola($id) {
-    $conexion = abrirConexion();
-    $sql = "SELECT juegos . *
-FROM juegos_consolas
-INNER JOIN consolas ON ( juegos_consolas.id_consola = consolas.id )
-INNER JOIN juegos ON ( juegos_consolas.id_juego = juegos.id )
-WHERE consolas.id=:id";
-    $sentencia = $conexion->prepare($sql);
-    $sentencia->bindParam("id", $id, PDO::PARAM_INT);
-    $sentencia->execute();
-    return $sentencia->fetch(PDO::FETCH_ASSOC);
-}
-
 function login($usuario, $clave) {
 
     $conexion = abrirConexion();
@@ -167,16 +194,6 @@ function logout() {
     session_destroy();
 }
 
-function getSmarty() {
-    $mySmarty = new Smarty();
-    $mySmarty->template_dir = 'Templates';
-    $mySmarty->compile_dir = 'Templates_c';
-    $mySmarty->cache_dir = 'Cache';
-    $mySmarty->config_dir = 'Config';
-
-    return $mySmarty;
-}
-
 function guardarUsuario($usuario, $clave, $alias) {
     $conexion = abrirConexion();
     $sql = 'INSERT INTO usuarios(email, password, alias) VALUES (:usuario, :clave, :alias)';
@@ -192,16 +209,7 @@ function guardarUsuario($usuario, $clave, $alias) {
     };
 }
 
-function getIdGeneroPorNombre($genero){
-    $conexion = abrirConexion();
-    $sql = "SELECT * FROM generos WHERE nombre=:genero";
-    $sentencia = $conexion->prepare($sql);
-    $sentencia->bindParam("genero", $genero, PDO::PARAM_STR);
-    $sentencia->execute();
-    return $sentencia->fetch(PDO::FETCH_ASSOC);
-}
-
-function guardarJuego($nombre, $genero, $poster, $fecha, $resumen, $empresa, $link, $tipoPoster) {
+function guardarJuego($nombre, $genero, $poster, $fecha, $resumen, $empresa, $link, $tipoPoster, $consolas) {
     $idGenero = getIdGeneroPorNombre($genero)["id"];
     $conexion = abrirConexion();
     $sql = 'INSERT INTO juegos(nombre, id_genero, fecha_lanzamiento, resumen, empresa, url_video) VALUES (:nombre, :genero, :fecha, :resumen, :empresa, :link)';
@@ -235,6 +243,9 @@ function guardarJuego($nombre, $genero, $poster, $fecha, $resumen, $empresa, $li
         $sentencia->bindParam("id", $id, PDO::PARAM_INT);
         $sentencia->execute();
     }
+
+    agregarConsolasAJuego($id, $consolas);
+
     /*
      * dejar nombres de archivos con algun tipo de estandar. 
      * obtener con $_FILES[nombre]["type"] obtenemos si es .png o png o como sea, y concatenamos al nombre del archivo
@@ -246,4 +257,16 @@ function guardarJuego($nombre, $genero, $poster, $fecha, $resumen, $empresa, $li
     } else {
         return false;
     };
+}
+
+function agregarConsolasAJuego($idJuego, $consolas) {
+    foreach ($consolas as $value) {
+        $idConsola = getIdConsolaElPorNombre($value);
+        $conexion = abrirConexion();
+        $sql = 'INSERT INTO juegos_consolas (id_juego, id_consola) VALUES (:id_juego, :id_consola)';
+        $sentencia = $conexion->prepare($sql);
+        $sentencia->bindParam("id_juego", $idJuego, PDO::PARAM_INT);
+        $sentencia->bindParam("id_consola", $idConsola["id"], PDO::PARAM_INT);
+        $pude = $sentencia->execute();
+    }
 }
