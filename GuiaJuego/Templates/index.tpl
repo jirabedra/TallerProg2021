@@ -4,6 +4,8 @@
         <meta charset="utf-8" lang="es">
         <title>Guia de videojuegos </title>
         <link rel="stylesheet" href="./css/index.css" type="text/css">
+        <script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+        <script type="text/javascript" src="./js/main.js"></script>
     </head>
     <body>
         {include file="encabezado.tpl"}
@@ -18,7 +20,7 @@
                 <a href="./login.php">Inicio de sesión</a>
                 <a href="./registro.php">Registrarme</a>
             {/if}
-            <a href="./contacto.html">Contacto</a>
+            <a href="#">Contacto</a>
         </div>
         <div id="buscador">
 
@@ -39,15 +41,15 @@
             </select>
 
             <label for="buscar">Ingresa tu búsqueda: </label>
-            <input type="text">
-            <input type="button" value="Buscar">
-        </div>      
+            <input type="text" id = "texto">
+            <input id = "buscar" type="button" value="Buscar">
+        </div> 
         <div id="productos">
-            
+            <h3>{"Productos"}</h3>
             {foreach from=$productos item=prod}
+                <h3>asd</h3>
                 {include file="tarjeta_producto.tpl" prod=$prod}
             {/foreach}
-
         </div>
     </body>
 </html>   

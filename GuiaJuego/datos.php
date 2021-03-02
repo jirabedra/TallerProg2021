@@ -82,6 +82,47 @@ function getComentariosDeJuego($id) {
     return $sentencia->fetch(PDO::FETCH_ASSOC);
 }
 
+//1 HORA 16 MINUTOS 30 SEGUNDOS
+
+function getJuegos($categoria, $pagina, $texto) {
+    $size = 5;
+    $offset = $pagina * $size;
+    $idGenero = $categoria["id"];
+    $conexion = abrirConexion();
+    $sql = "SELECT * FROM juegos WHERE id_genero=:idGenero AND nombre LIKE :texto LIMIT :offset, :size";
+    $sentencia = $conexion->prepare($sql);
+    $sentencia->bindParam("id_genero", $idGenero, PDO::PARAM_INT);
+    $sentencia->bindParam("texto",'%'.texto.'%', PDO::PARAM_STR);
+    $sentencia->bindParam("offset", offset, PDO::PARAM_INT);
+    $sentencia->bindParam("size", size, PDO::PARAM_INT);
+    $sentencia->execute();
+    return $sentencia->fetchAll(PDO::FETCH_ASSOC);
+}
+
+function ultimaPaginaDeJuegos($categoria, $texto){
+    $idGenero = $categoria["id"];
+    $conexion = abrirConexion2();
+    $params = array(
+        array("idGenero", $idGenero, "int"),
+        array("texto", '%'.$texto.'%', "string")
+    );
+    $sql = "SELECT count(*) as total FROM juegos WHERE id_genero=:idGenero AND nombre LIKE :texto";
+    $conexion->consulta($sql, $params);
+    $size = 5;
+    $fila = $conexion->siguienteRegistro();
+    $paginas = ceil($filas["total"] / $size)-1;
+    return $paginas;
+    
+    /*$conexion = abrirConexion();
+    $sql = "SELECT count(*) as total FROM juegos WHERE id_genero=:idGenero AND nombre LIKE :texto";
+    $sentencia = $conexion->prepare($sql);
+    $sentencia->bindParam("id_genero", $idGenero, PDO::PARAM_INT);
+    $sentencia->bindParam("texto",'%'.texto.'%', PDO::PARAM_STR);
+    $sentencia->execute();
+    $fila = $sentencia->fetch(PDO::FETCH_ASSOC);
+     */
+}
+
 function getTodosLosJuegos() {
     $conexion = abrirConexion();
     $sql = "SELECT * FROM juegos";

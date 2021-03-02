@@ -1,11 +1,12 @@
-
-<h3>{$categoria.nombre}</h3>
-
-{foreach from=$productos item=producto}
-    {include file="tarjeta_producto.tpl" pelicula=$pelicula}
+<h3>{$categoria["nombre"]}</h3>
+{foreach from=$productos item=prod}
+    {include file="tarjeta_producto.tpl" prod=$prod categorias=$categorias}
 {/foreach}
+
+    {$categorias|@print_r}
+
 <div id="paginacion">
-    <button id="anterior" {if ($pagina<=1)}disabled{/if}>Anterior</button>
-    Pagina {$pagina} de {$paginas}
-    <button id="siguiente" {if ($pagina>=$paginas)}disabled{/if}>Siguiente</button>
+    <button id="anterior" {if ($pagina<=0)}disabled{/if}>Anterior</button>
+    Pagina {$pagina} de {$ultimaPagina}
+    <button id="siguiente" {if ($pagina>=$ultimaPagina)}disabled{/if}>Siguiente</button>
 </div>
