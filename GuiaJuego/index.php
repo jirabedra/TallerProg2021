@@ -12,7 +12,7 @@ if (isset($_SESSION['usuarioLogueado'])) {
 }
 
 $categorias = getGeneros();
-$consolas = getNombreConsolas();
+$consolas = getConsolas();
 
 $_SESSION['consolas'] = $consolas; //Todos los nombres de las consolas
 $_SESSION['categorias'] = $categorias; //Todos los géneros cargados

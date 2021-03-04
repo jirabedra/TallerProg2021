@@ -1,6 +1,7 @@
 var pagina = 0;
 var categoria = 1;
 var texto = "";
+var consola = 1;
 
 function cargar() {
     $.ajax({
@@ -8,19 +9,19 @@ function cargar() {
         data: {
             catId: categoria,
             pag: pagina,
-            texto: texto
+            texto: texto,
+            consola:consola
         },
         dataType: "html"
     }).done(function (html) {
-        console.log("etapa 1");
+
         $("#productos").html(html);
-        
-        console.log("etapa 2");
+
         $("#anterior").click(function () {
             pagina -= 1;
             cargar();
         });
-        
+
         $("#siguiente").click(function () {
             pagina += 1;
             cargar();
@@ -30,26 +31,31 @@ function cargar() {
     });
 }
 
-$(document).ready(function(){
-    $(".consolas-filtro").click(function(){
-        categoria = $(this).attr('catId');
-        $pagina = 0;
-        cargar();
-    });
-    
-    $("#buscar").click(function () {
-        texto = $("#texto").val();
-        pagina = 0
-        cargar();
-    });
-    
-    $("texto").on('keyup', function () {
-        texto = $("texto").val();
+$(document).ready(function () {
+
+    $("#consolas-filtro").change(function(){
+        consola = $(this).val();
         pagina = 0;
         cargar();
     });
-    
-    console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-    
+
+    $("#buscar").click(function () {
+        texto = $("#texto").val();
+        pagina = 0;
+        cargar();
+    });
+
+    $('#genero-filtro').change(function () {
+        categoria = $(this).val();
+        pagina = 0;
+        cargar();
+    });
+
+    $("texto").on('keyup', function () {
+        texto = $("#texto").val();
+        pagina = 0;
+        cargar();
+    });
+
     cargar();
 });

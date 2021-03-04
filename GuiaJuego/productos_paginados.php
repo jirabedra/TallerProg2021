@@ -5,7 +5,6 @@ ini_set('display_errors', 1);
 error_reporting(E_ERROR);
 $mySmarty = getSmarty();
 
-
 $catId = 1;
 if (isset($_GET["catId"])) {
     $catId = $_GET["catId"];
@@ -17,29 +16,25 @@ if (isset($_GET["pag"])) {
     $pag = $_GET["pag"];
 }
 
+$consola = 1;
+if (isset($_GET["consola"])) {
+    $consola = $_GET["consola"];
+}
+
 $texto = "";
 if (isset($_GET["texto"])) {
     $texto = $_GET["texto"];
 }
 
-if(isset($categoria)){
-    setCookie('ultimaCategoria', $catId, time() + (60*60*24));
-}
-
 $categorias = getGeneros();
-$consolas = getNombreConsolas();
+$consolas = getConsolas();
 
 $_SESSION['consolas'] = $consolas; //Todos los nombres de las consolas
 $_SESSION['categorias'] = $categorias; //Todos los géneros cargados
 
-$productos = getTodosLosJuegos();
+$productos = getJuegos($categoria, $pag, $texto, $consola);
 $ultimaPagina = ultimaPaginaDeJuegos($categoria, $texto);
-/*
-foreach ($categorias as $cat) {
-    print_r($cat);
-    print_r("   ");
-}
-*/
+
 # setear variables
 $mySmarty->assign("pagina", $pag);
 $mySmarty->assign("ultimaPagina", $ultimaPagina);

@@ -3,8 +3,6 @@
     {include file="tarjeta_producto.tpl" prod=$prod categorias=$categorias}
 {/foreach}
 
-    {$categorias|@print_r}
-
 <div id="paginacion">
     <button id="anterior" {if ($pagina<=0)}disabled{/if}>Anterior</button>
     Pagina {$pagina} de {$ultimaPagina}

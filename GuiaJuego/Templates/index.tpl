@@ -26,17 +26,17 @@
 
             <label class="consolas-filtro-label" for="texto-filtro">Consolas:</label>
 
-            <select class="consolas-filtro" id="cars">
+            <select class="consolas-filtro" id="consolas-filtro">
                 {foreach from=$consolas item=con}
-                    <option value={$con.nombre}>{$con.nombre}</option>
+                    <option value={$con.id}>{$con.nombre}</option>
                 {/foreach}
             </select>
 
             <label class="genero-filtro-label" for="texto-filtro">Generos:</label>
-
-            <select class="genero-filtro">
+            
+            <select class="genero-filtro" id = "genero-filtro">
                 {foreach from=$categorias item=cat}
-                    <option value={$cat.nombre}>{$cat.nombre}</option>
+                    <option value={$cat.id}>{$cat.nombre}</option>
                 {/foreach}
             </select>
 

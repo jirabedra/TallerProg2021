@@ -82,44 +82,57 @@ function getComentariosDeJuego($id) {
     return $sentencia->fetch(PDO::FETCH_ASSOC);
 }
 
-//1 HORA 16 MINUTOS 30 SEGUNDOS
-
-function getJuegos($categoria, $pagina, $texto) {
+function getJuegos($categoria, $pagina, $texto, $consola) {
+    $textoDos = '%' . $texto . '%';
     $size = 5;
     $offset = $pagina * $size;
     $idGenero = $categoria["id"];
+
     $conexion = abrirConexion();
-    $sql = "SELECT * FROM juegos WHERE id_genero=:idGenero AND nombre LIKE :texto LIMIT :offset, :size";
+    $sql = "SELECT *
+            FROM juegos_consolas
+                INNER JOIN consolas ON ( juegos_consolas.id_consola = consolas.id )
+                INNER JOIN juegos ON ( juegos_consolas.id_juego = juegos.id )
+            WHERE consolas.id=:id AND id_genero=:idGenero AND juegos.nombre LIKE :texto LIMIT :offset, :size";
     $sentencia = $conexion->prepare($sql);
-    $sentencia->bindParam("id_genero", $idGenero, PDO::PARAM_INT);
-    $sentencia->bindParam("texto",'%'.texto.'%', PDO::PARAM_STR);
-    $sentencia->bindParam("offset", offset, PDO::PARAM_INT);
-    $sentencia->bindParam("size", size, PDO::PARAM_INT);
+    $sentencia->bindParam("id", $consola, PDO::PARAM_INT);
+    $sentencia->bindParam("idGenero", $idGenero, PDO::PARAM_INT);
+    $sentencia->bindParam("texto", $textoDos, PDO::PARAM_STR);
+    $sentencia->bindParam("offset", $offset, PDO::PARAM_INT);
+    $sentencia->bindParam("size", $size, PDO::PARAM_INT);
     $sentencia->execute();
     return $sentencia->fetchAll(PDO::FETCH_ASSOC);
+    
 }
-
-function ultimaPaginaDeJuegos($categoria, $texto){
+function getJuegoPorId($idJuego){
+    $conexion = abrirConexion();
+    $sql = "SELECT * FROM juegos WHERE id=:idJuego";
+    $sentencia = $conexion->prepare($sql);
+    $sentencia->bindParam("idJuego", $idJuego, PDO::PARAM_INT);
+    $sentencia->execute();
+    return $sentencia->fetch(PDO::FETCH_ASSOC);
+}
+function ultimaPaginaDeJuegos($categoria, $texto) {
     $idGenero = $categoria["id"];
     $conexion = abrirConexion2();
     $params = array(
         array("idGenero", $idGenero, "int"),
-        array("texto", '%'.$texto.'%', "string")
+        array("texto", '%' . $texto . '%', "string")
     );
     $sql = "SELECT count(*) as total FROM juegos WHERE id_genero=:idGenero AND nombre LIKE :texto";
     $conexion->consulta($sql, $params);
     $size = 5;
     $fila = $conexion->siguienteRegistro();
-    $paginas = ceil($filas["total"] / $size)-1;
+    $paginas = ceil($fila["total"] / $size) - 1;
     return $paginas;
-    
-    /*$conexion = abrirConexion();
-    $sql = "SELECT count(*) as total FROM juegos WHERE id_genero=:idGenero AND nombre LIKE :texto";
-    $sentencia = $conexion->prepare($sql);
-    $sentencia->bindParam("id_genero", $idGenero, PDO::PARAM_INT);
-    $sentencia->bindParam("texto",'%'.texto.'%', PDO::PARAM_STR);
-    $sentencia->execute();
-    $fila = $sentencia->fetch(PDO::FETCH_ASSOC);
+
+    /* $conexion = abrirConexion();
+      $sql = "SELECT count(*) as total FROM juegos WHERE id_genero=:idGenero AND nombre LIKE :texto";
+      $sentencia = $conexion->prepare($sql);
+      $sentencia->bindParam("id_genero", $idGenero, PDO::PARAM_INT);
+      $sentencia->bindParam("texto",'%'.texto.'%', PDO::PARAM_STR);
+      $sentencia->execute();
+      $fila = $sentencia->fetch(PDO::FETCH_ASSOC);
      */
 }
 
@@ -178,44 +191,6 @@ function guardarCategoria($nombre) {
     $sentencia = $conexion->prepare($sql);
     $sentencia->bindParam("nombre", $nombre, PDO::PARAM_STR);
     $sentencia->execute();
-}
-
-function getProductosDeCategoria($idCategoria) {
-    $productos = array();
-    if ($idCategoria == 1) {
-        $productos[] = array("id" => 1,
-            "nombre" => "Pentium III",
-            "descripcion" => "procesador muy lento y viejo",
-            "precio" => 10,
-            "imagen" => "logo.png");
-        $productos[] = array("id" => 2,
-            "nombre" => "Pentium IV",
-            "descripcion" => "procesador lento y viejo",
-            "precio" => 15,
-            "imagen" => "logo.png");
-        $productos[] = array("id" => 3,
-            "nombre" => "i3",
-            "descripcion" => "procesador lento y moderno",
-            "precio" => 20,
-            "imagen" => "logo.png");
-    } else if ($idCategoria == 2) {
-        $productos[] = array("id" => 4,
-            "nombre" => "4GB DDR 2",
-            "descripcion" => "poca memoria y lenta",
-            "precio" => 50,
-            "imagen" => "logo.png");
-        $productos[] = array("id" => 5,
-            "nombre" => "8 GB DDR 3",
-            "descripcion" => "bastante memoria y velocidad normal",
-            "precio" => 120,
-            "imagen" => "logo.png");
-        $productos[] = array("id" => 6,
-            "nombre" => "16 GB DDR5",
-            "descripcion" => "mucha memoria y super rapida",
-            "precio" => 195,
-            "imagen" => "logo.png");
-    }
-    return $productos;
 }
 
 function login($usuario, $clave) {
