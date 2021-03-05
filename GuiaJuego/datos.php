@@ -102,9 +102,9 @@ function getJuegos($categoria, $pagina, $texto, $consola) {
     $sentencia->bindParam("size", $size, PDO::PARAM_INT);
     $sentencia->execute();
     return $sentencia->fetchAll(PDO::FETCH_ASSOC);
-    
 }
-function getJuegoPorId($idJuego){
+
+function getJuegoPorId($idJuego) {
     $conexion = abrirConexion();
     $sql = "SELECT * FROM juegos WHERE id=:idJuego";
     $sentencia = $conexion->prepare($sql);
@@ -112,6 +112,7 @@ function getJuegoPorId($idJuego){
     $sentencia->execute();
     return $sentencia->fetch(PDO::FETCH_ASSOC);
 }
+
 function ultimaPaginaDeJuegos($categoria, $texto) {
     $idGenero = $categoria["id"];
     $conexion = abrirConexion2();
@@ -285,4 +286,14 @@ function agregarConsolasAJuego($idJuego, $consolas) {
         $sentencia->bindParam("id_consola", $idConsola["id"], PDO::PARAM_INT);
         $pude = $sentencia->execute();
     }
+}
+
+function agregarConsolaAJuego($idJuego, $idConsola) {
+    $conexion = abrirConexion();
+    $sql = 'INSERT INTO juegos_consolas (id_juego, id_consola) VALUES (:id_jueg, :id_consol)';
+    $sentencia = $conexion->prepare($sql);
+    $sentencia->bindParam("id_jueg", $idJuego, PDO::PARAM_INT);
+    $sentencia->bindParam("id_consol", $idConsola, PDO::PARAM_INT);
+    $pude = $sentencia->execute();
+    return $pude;
 }

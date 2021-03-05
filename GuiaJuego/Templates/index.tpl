@@ -15,6 +15,7 @@
                 Hola, {$usuarioLogueado} <a href="./doLogout.php">Logout</a>
                 {if ($smarty.cookies.soyAdmin == 1)}
                     <a href="./altaJuego.php">Nuevo juego</a>
+                     <a href="./agregarConsola.php">Agregar consola juego</a>
                 {/if}
             {else}
                 <a href="./login.php">Inicio de sesión</a>
@@ -43,7 +44,7 @@
             <label for="buscar">Ingresa tu búsqueda: </label>
             <input type="text" id = "texto">
             <input id = "buscar" type="button" value="Buscar">
-        </div> 
+        </div>                                                                                                                                                                           
         <div id="productos">
             <h3>{"Productos"}</h3>
             {foreach from=$productos item=prod}
