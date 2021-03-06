@@ -195,7 +195,6 @@ function guardarCategoria($nombre) {
 }
 
 function login($usuario, $clave) {
-
     $conexion = abrirConexion();
     $sql = "SELECT * FROM usuarios WHERE email=:usuario AND password=:clave";
     $sentencia = $conexion->prepare($sql);
@@ -296,4 +295,25 @@ function agregarConsolaAJuego($idJuego, $idConsola) {
     $sentencia->bindParam("id_consol", $idConsola, PDO::PARAM_INT);
     $pude = $sentencia->execute();
     return $pude;
+}
+
+function AgregarVisitaJuego($prodId, $vistasActuales){
+    $conexion = abrirConexion();
+    $sql = 'UPDATE juegos
+            SET visualizaciones = :visitas
+            WHERE id = :idJuego';
+    $sentencia = $conexion->prepare($sql);
+    $sentencia->bindParam("visitas", $vistasActuales, PDO::PARAM_INT);
+    $sentencia->bindParam("idJuego", $prodId, PDO::PARAM_INT);
+    $pude = $sentencia->execute();
+    return $pude;
+}
+
+function getVistasJuego($prodId){
+    $conexion = abrirConexion();
+    $sql = "SELECT visualizaciones FROM juegos WHERE id=:idJuego";
+    $sentencia = $conexion->prepare($sql);
+    $sentencia->bindParam("idJuego", $prodId, PDO::PARAM_INT);
+    $sentencia->execute();
+    return $sentencia->fetch(PDO::FETCH_ASSOC);
 }

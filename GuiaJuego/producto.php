@@ -18,6 +18,9 @@ require_once 'datos.php';
             $prodId = $_GET["prodId"];
         }
 
+        $vistasActuales = getVistasJuego($prodId);
+        $vistasActuales['visualizaciones']++;
+        AgregarVisitaJuego($prodId, $vistasActuales['visualizaciones']);
         $producto = getJuegoPorId($prodId);
 
         $mySmarty = getSmarty();
@@ -26,3 +29,4 @@ require_once 'datos.php';
         ?>
     </body>
 </html>
+
