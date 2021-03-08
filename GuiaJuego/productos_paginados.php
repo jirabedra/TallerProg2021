@@ -26,13 +26,41 @@ if (isset($_GET["texto"])) {
     $texto = $_GET["texto"];
 }
 
+$criterioOrden = 1;
+if (isset($_GET["criterioOrden"])) {
+    $criterioOrden = $_GET["criterioOrden"];
+}
+
 $categorias = getGeneros();
 $consolas = getConsolas();
 
+
 $_SESSION['consolas'] = $consolas; //Todos los nombres de las consolas
 $_SESSION['categorias'] = $categorias; //Todos los géneros cargados
-
-$productos = getJuegos($categoria, $pag, $texto, $consola);
+$productos = NULL;
+switch ($criterioOrden) {
+    case 1:
+        $productos = getJuegosOrdenadosPorFechaLanzamientoAsc($categoria, $pag, $texto, $consola);
+        break;
+    case 2:
+        $productos = getJuegosOrdenadosPorFechaLanzamientoDesc($categoria, $pag, $texto, $consola);
+        break;
+    case 3:
+        $productos = getJuegosOrdenadosPorPuntuacionPorAsc($categoria, $pag, $texto, $consola);
+        break;
+    case 4:
+        $productos = getJuegosOrdenadosPorPuntuacionDesc($categoria, $pag, $texto, $consola);
+        break;
+    case 5:
+        $productos = getJuegosOrdenadosPorVisualizacionesAsc($categoria, $pag, $texto, $consola);
+        break;
+    case 6:
+        $productos = getJuegosOrdenadosPorVisualizacionesDesc($categoria, $pag, $texto, $consola);
+        break;
+    default:
+        break;
+}
+//$productos = getJuegos($categoria, $pag, $texto, $consola);
 $ultimaPagina = ultimaPaginaDeJuegos($categoria, $texto);
 
 # setear variables

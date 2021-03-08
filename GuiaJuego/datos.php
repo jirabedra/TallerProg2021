@@ -3,6 +3,7 @@
 require_once 'class.Conexion.BD.php';
 require_once './libs/Smarty.class.php';
 
+//Aqui se deben escribir los datos como se explica en el manual de usuario
 function abrirConexion() {
     $usuario = "root";
     $clave = "root";
@@ -10,6 +11,7 @@ function abrirConexion() {
     return $conexion;
 }
 
+//Aqui se deben escribir los datos como se explica en el manual de usuario
 function abrirConexion2() {
     $usuario = "root";
     $clave = "root";
@@ -82,9 +84,17 @@ function getComentariosDeJuego($id) {
     return $sentencia->fetch(PDO::FETCH_ASSOC);
 }
 
+function getTodosLosComentarios() {
+    $conexion = abrirConexion();
+    $sql = "SELECT * FROM comentarios";
+    $sentencia = $conexion->prepare($sql);
+    $sentencia->execute();
+    return $sentencia->fetchAll(PDO::FETCH_ASSOC);
+}
+
 function getJuegos($categoria, $pagina, $texto, $consola) {
     $textoDos = '%' . $texto . '%';
-    $size = 5;
+    $size = 8;
     $offset = $pagina * $size;
     $idGenero = $categoria["id"];
 
@@ -104,6 +114,168 @@ function getJuegos($categoria, $pagina, $texto, $consola) {
     return $sentencia->fetchAll(PDO::FETCH_ASSOC);
 }
 
+function getJuegosOrdenadosPorFechaLanzamientoAsc($categoria, $pag, $texto, $consola) {
+    $textoDos = '%' . $texto . '%';
+    $size = 8;
+    $offset = $pagina * $size;
+    $idGenero = $categoria["id"];
+
+    $conexion = abrirConexion();
+    $sql = "SELECT *
+            FROM juegos_consolas
+                INNER JOIN consolas ON ( juegos_consolas.id_consola = consolas.id )
+                INNER JOIN juegos ON ( juegos_consolas.id_juego = juegos.id )
+            WHERE consolas.id=:id AND id_genero=:idGenero AND juegos.nombre LIKE :texto 
+            ORDER BY juegos.fecha_lanzamiento ASC
+            LIMIT :offset, :size";
+    $sentencia = $conexion->prepare($sql);
+    $sentencia->bindParam("id", $consola, PDO::PARAM_INT);
+    $sentencia->bindParam("idGenero", $idGenero, PDO::PARAM_INT);
+    $sentencia->bindParam("texto", $textoDos, PDO::PARAM_STR);
+    $sentencia->bindParam("offset", $offset, PDO::PARAM_INT);
+    $sentencia->bindParam("size", $size, PDO::PARAM_INT);
+    $sentencia->execute();
+
+    $ret = $sentencia->fetchAll(PDO::FETCH_ASSOC);
+
+    return $ret;
+}
+
+function getJuegosOrdenadosPorFechaLanzamientoDesc($categoria, $pag, $texto, $consola) {
+    $textoDos = '%' . $texto . '%';
+    $size = 8;
+    $offset = $pagina * $size;
+    $idGenero = $categoria["id"];
+
+    $conexion = abrirConexion();
+    $sql = "SELECT *
+            FROM juegos_consolas
+                INNER JOIN consolas ON ( juegos_consolas.id_consola = consolas.id )
+                INNER JOIN juegos ON ( juegos_consolas.id_juego = juegos.id )
+            WHERE consolas.id=:id AND id_genero=:idGenero AND juegos.nombre LIKE :texto 
+            ORDER BY juegos.fecha_lanzamiento DESC
+            LIMIT :offset, :size";
+    $sentencia = $conexion->prepare($sql);
+    $sentencia->bindParam("id", $consola, PDO::PARAM_INT);
+    $sentencia->bindParam("idGenero", $idGenero, PDO::PARAM_INT);
+    $sentencia->bindParam("texto", $textoDos, PDO::PARAM_STR);
+    $sentencia->bindParam("offset", $offset, PDO::PARAM_INT);
+    $sentencia->bindParam("size", $size, PDO::PARAM_INT);
+    $sentencia->execute();
+
+    $ret = $sentencia->fetchAll(PDO::FETCH_ASSOC);
+
+    return $ret;
+}
+
+function getJuegosOrdenadosPorPuntuacionPorAsc($categoria, $pag, $texto, $consola) {
+    $textoDos = '%' . $texto . '%';
+    $size = 8;
+    $offset = $pagina * $size;
+    $idGenero = $categoria["id"];
+
+    $conexion = abrirConexion();
+    $sql = "SELECT *
+            FROM juegos_consolas
+                INNER JOIN consolas ON ( juegos_consolas.id_consola = consolas.id )
+                INNER JOIN juegos ON ( juegos_consolas.id_juego = juegos.id )
+            WHERE consolas.id=:id AND id_genero=:idGenero AND juegos.nombre LIKE :texto 
+            ORDER BY juegos.puntuacion ASC
+            LIMIT :offset, :size";
+    $sentencia = $conexion->prepare($sql);
+    $sentencia->bindParam("id", $consola, PDO::PARAM_INT);
+    $sentencia->bindParam("idGenero", $idGenero, PDO::PARAM_INT);
+    $sentencia->bindParam("texto", $textoDos, PDO::PARAM_STR);
+    $sentencia->bindParam("offset", $offset, PDO::PARAM_INT);
+    $sentencia->bindParam("size", $size, PDO::PARAM_INT);
+    $sentencia->execute();
+
+    $ret = $sentencia->fetchAll(PDO::FETCH_ASSOC);
+
+    return $ret;
+}
+
+function getJuegosOrdenadosPorPuntuacionDesc($categoria, $pag, $texto, $consola) {
+    $textoDos = '%' . $texto . '%';
+    $size = 8;
+    $offset = $pagina * $size;
+    $idGenero = $categoria["id"];
+
+    $conexion = abrirConexion();
+    $sql = "SELECT *
+            FROM juegos_consolas
+                INNER JOIN consolas ON ( juegos_consolas.id_consola = consolas.id )
+                INNER JOIN juegos ON ( juegos_consolas.id_juego = juegos.id )
+            WHERE consolas.id=:id AND id_genero=:idGenero AND juegos.nombre LIKE :texto 
+            ORDER BY juegos.puntuacion DESC
+            LIMIT :offset, :size";
+    $sentencia = $conexion->prepare($sql);
+    $sentencia->bindParam("id", $consola, PDO::PARAM_INT);
+    $sentencia->bindParam("idGenero", $idGenero, PDO::PARAM_INT);
+    $sentencia->bindParam("texto", $textoDos, PDO::PARAM_STR);
+    $sentencia->bindParam("offset", $offset, PDO::PARAM_INT);
+    $sentencia->bindParam("size", $size, PDO::PARAM_INT);
+    $sentencia->execute();
+
+    $ret = $sentencia->fetchAll(PDO::FETCH_ASSOC);
+
+    return $ret;
+}
+
+function getJuegosOrdenadosPorVisualizacionesAsc($categoria, $pag, $texto, $consola) {
+    $textoDos = '%' . $texto . '%';
+    $size = 8;
+    $offset = $pagina * $size;
+    $idGenero = $categoria["id"];
+
+    $conexion = abrirConexion();
+    $sql = "SELECT *
+            FROM juegos_consolas
+                INNER JOIN consolas ON ( juegos_consolas.id_consola = consolas.id )
+                INNER JOIN juegos ON ( juegos_consolas.id_juego = juegos.id )
+            WHERE consolas.id=:id AND id_genero=:idGenero AND juegos.nombre LIKE :texto 
+            ORDER BY juegos.visualizaciones ASC
+            LIMIT :offset, :size";
+    $sentencia = $conexion->prepare($sql);
+    $sentencia->bindParam("id", $consola, PDO::PARAM_INT);
+    $sentencia->bindParam("idGenero", $idGenero, PDO::PARAM_INT);
+    $sentencia->bindParam("texto", $textoDos, PDO::PARAM_STR);
+    $sentencia->bindParam("offset", $offset, PDO::PARAM_INT);
+    $sentencia->bindParam("size", $size, PDO::PARAM_INT);
+    $sentencia->execute();
+
+    $ret = $sentencia->fetchAll(PDO::FETCH_ASSOC);
+
+    return $ret;
+}
+
+function getJuegosOrdenadosPorVisualizacionesDesc($categoria, $pag, $texto, $consola) {
+    $textoDos = '%' . $texto . '%';
+    $size = 8;
+    $offset = $pagina * $size;
+    $idGenero = $categoria["id"];
+
+    $conexion = abrirConexion();
+    $sql = "SELECT *
+            FROM juegos_consolas
+                INNER JOIN consolas ON ( juegos_consolas.id_consola = consolas.id )
+                INNER JOIN juegos ON ( juegos_consolas.id_juego = juegos.id )
+            WHERE consolas.id=:id AND id_genero=:idGenero AND juegos.nombre LIKE :texto 
+            ORDER BY juegos.visualizaciones DESC
+            LIMIT :offset, :size";
+    $sentencia = $conexion->prepare($sql);
+    $sentencia->bindParam("id", $consola, PDO::PARAM_INT);
+    $sentencia->bindParam("idGenero", $idGenero, PDO::PARAM_INT);
+    $sentencia->bindParam("texto", $textoDos, PDO::PARAM_STR);
+    $sentencia->bindParam("offset", $offset, PDO::PARAM_INT);
+    $sentencia->bindParam("size", $size, PDO::PARAM_INT);
+    $sentencia->execute();
+
+    $ret = $sentencia->fetchAll(PDO::FETCH_ASSOC);
+
+    return $ret;
+}
+
 function getJuegoPorId($idJuego) {
     $conexion = abrirConexion();
     $sql = "SELECT * FROM juegos WHERE id=:idJuego";
@@ -111,6 +283,21 @@ function getJuegoPorId($idJuego) {
     $sentencia->bindParam("idJuego", $idJuego, PDO::PARAM_INT);
     $sentencia->execute();
     return $sentencia->fetch(PDO::FETCH_ASSOC);
+}
+
+function getNombreConsolasDelJuego($prodId) {
+    $conexion = abrirConexion();
+    $sql = "SELECT consolas.nombre
+            FROM juegos_consolas
+                INNER JOIN consolas ON ( juegos_consolas.id_consola = consolas.id )
+                INNER JOIN juegos ON ( juegos_consolas.id_juego = juegos.id )
+            WHERE juegos.id = :idJuego";
+    $sentencia = $conexion->prepare($sql);
+    $sentencia->bindParam("idJuego", $prodId, PDO::PARAM_INT);
+    $sentencia->execute();
+    $ret = $sentencia->fetchAll();
+
+    return $ret;
 }
 
 function ultimaPaginaDeJuegos($categoria, $texto) {
@@ -122,7 +309,7 @@ function ultimaPaginaDeJuegos($categoria, $texto) {
     );
     $sql = "SELECT count(*) as total FROM juegos WHERE id_genero=:idGenero AND nombre LIKE :texto";
     $conexion->consulta($sql, $params);
-    $size = 5;
+    $size = 8;
     $fila = $conexion->siguienteRegistro();
     $paginas = ceil($fila["total"] / $size) - 1;
     return $paginas;
@@ -135,6 +322,19 @@ function ultimaPaginaDeJuegos($categoria, $texto) {
       $sentencia->execute();
       $fila = $sentencia->fetch(PDO::FETCH_ASSOC);
      */
+}
+
+function ultimaPaginaDeComentario($prodId) {
+    $conexion = abrirConexion2();
+    $params = array(
+        array("prodId", $prodId, "int"),
+    );
+    $sql = "SELECT count(*) as total FROM comentarios WHERE id_juego=:prodId ORDER BY fecha DESC";
+    $conexion->consulta($sql, $params);
+    $size = 5;
+    $fila = $conexion->siguienteRegistro();
+    $paginas = ceil($fila["total"] / $size) - 1;
+    return $paginas;
 }
 
 function getTodosLosJuegos() {
@@ -184,6 +384,65 @@ function getSmarty() {
     $mySmarty->config_dir = 'Config';
 
     return $mySmarty;
+}
+
+function agregarComentarioYPuntuacion($usuarioLogueadoId, $prodId, $texto, $puntuacion) {
+    $conexion = abrirConexion();
+    $sql = "INSERT INTO comentarios (id_usuario, id_juego, texto, fecha, puntuacion)VALUES(:id_usua, :id_jueg, :tex, NOW(), :puntuac)";
+    $sentencia = $conexion->prepare($sql);
+    $sentencia->bindParam("id_usua", $usuarioLogueadoId, PDO::PARAM_INT);
+    $sentencia->bindParam("id_jueg", $prodId, PDO::PARAM_INT);
+    $sentencia->bindParam("tex", $texto, PDO::PARAM_STR);
+    $sentencia->bindParam("puntuac", $puntuacion, PDO::PARAM_INT);
+    $sentencia->execute();
+}
+
+function actualizarPuntuacionJuego($prodId) {
+    $comentariosTotales = cantidadDeComentarios($prodId)['count(*)'];
+    $comentarios = comentariosDeJuego($prodId);
+    $puntosTotales = 0;
+    foreach ($comentarios as $com) {
+        $puntosTotales += $com['puntuacion'];
+    }
+
+    $puntosTotales = floor($puntosTotales / $comentariosTotales);
+
+    $conexion = abrirConexion();
+    $sql = 'UPDATE juegos
+            SET puntuacion = :puntos
+            WHERE id = :idJuego';
+    $sentencia = $conexion->prepare($sql);
+    $sentencia->bindParam("puntos", $puntosTotales, PDO::PARAM_INT);
+    $sentencia->bindParam("idJuego", $prodId, PDO::PARAM_INT);
+    $pude = $sentencia->execute();
+    return $pude;
+}
+
+function comentariosDeJuego($prodId, $pag) {
+    $size = 5;
+    $offset = $pag * $size;
+    $conexion = abrirConexion();
+    $sql = "SELECT * FROM comentarios WHERE id_juego=:juegoId 
+            ORDER BY comentarios.fecha DESC
+            LIMIT :offset, :size";
+    $sentencia = $conexion->prepare($sql);
+    $sentencia->bindParam("juegoId", $prodId, PDO::PARAM_INT);
+    $sentencia->bindParam("offset", $offset, PDO::PARAM_INT);
+    $sentencia->bindParam("size", $size, PDO::PARAM_INT);
+    $sentencia->execute();
+    $ret = $sentencia->fetchAll(PDO::FETCH_ASSOC);
+    return $ret;
+}
+
+function cantidadDeComentarios($prodId) {
+    $conexion = abrirConexion();
+    $sql = "SELECT count(*) FROM comentarios WHERE id_juego=:juegoId";
+    $sentencia = $conexion->prepare($sql);
+    $sentencia->bindParam("juegoId", $prodId, PDO::PARAM_INT);
+    $sentencia->execute();
+    $ret = $sentencia->fetch(PDO::FETCH_ASSOC);
+
+    return $ret;
 }
 
 function guardarCategoria($nombre) {
@@ -297,7 +556,7 @@ function agregarConsolaAJuego($idJuego, $idConsola) {
     return $pude;
 }
 
-function AgregarVisitaJuego($prodId, $vistasActuales){
+function AgregarVisitaJuego($prodId, $vistasActuales) {
     $conexion = abrirConexion();
     $sql = 'UPDATE juegos
             SET visualizaciones = :visitas
@@ -309,7 +568,7 @@ function AgregarVisitaJuego($prodId, $vistasActuales){
     return $pude;
 }
 
-function getVistasJuego($prodId){
+function getVistasJuego($prodId) {
     $conexion = abrirConexion();
     $sql = "SELECT visualizaciones FROM juegos WHERE id=:idJuego";
     $sentencia = $conexion->prepare($sql);

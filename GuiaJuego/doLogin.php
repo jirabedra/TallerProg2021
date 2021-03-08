@@ -7,6 +7,7 @@ $usuario = $_POST["usuario"];
 $clave = $_POST["clave"];
 
 $usuarioLogueado = login($usuario, $clave)["alias"];
+$usuarioLogueadoId = login($usuario, $clave)["id"];
 $esAdmin = login($usuario, $clave)["es_admin"];
 
 if($esAdmin == 1){
@@ -18,6 +19,7 @@ if($esAdmin == 1){
 if (isset($usuarioLogueado) && strlen($usuarioLogueado) > 0) {
     session_start();
     $_SESSION["usuarioLogueado"] = $usuarioLogueado;
+    $_SESSION["usuarioLogueadoId"] = $usuarioLogueadoId;
     header('location:index.php');
 } else {
     header('location:login.php?err=1');

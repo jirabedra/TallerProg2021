@@ -58,6 +58,17 @@ ul {
 	border-right: 1px solid #CCCCCC;
 }
 
+#productoDestacado {
+	float: right;
+	width: 70%;
+}
+
+#productoDestacado img {
+	float: left;
+	width: 1000px;
+	padding-right: 10px;
+}
+
 #productos {
 	float: right;
 	width: 70%;

@@ -15,7 +15,7 @@
                 Hola, {$usuarioLogueado} <a href="./doLogout.php">Logout</a>
                 {if ($smarty.cookies.soyAdmin == 1)}
                     <a href="./altaJuego.php">Nuevo juego</a>
-                     <a href="./agregarConsola.php">Agregar consola juego</a>
+                    <a href="./agregarConsola.php">Agregar consola juego</a>
                 {/if}
             {else}
                 <a href="./login.php">Inicio de sesión</a>
@@ -24,6 +24,15 @@
             <a href="#">Contacto</a>
         </div>
         <div id="buscador">
+
+            <select class="criterio-orden" id="criterio-orden">
+                <option value=1>Fecha de lanzamiento Ascendente</option>
+                <option value=2>Fecha de lanzamiento Descendente</option>
+                <option value=3>Puntaje Ascendente</option>
+                <option value=4>Puntaje Descendente</option>
+                <option value=5>Cantidad de visualizaciones Ascendente</option>
+                <option value=6>Cantidad de visualizaciones Descendente</option>
+            </select>
 
             <label class="consolas-filtro-label" for="texto-filtro">Consolas:</label>
 
@@ -34,7 +43,7 @@
             </select>
 
             <label class="genero-filtro-label" for="texto-filtro">Generos:</label>
-            
+
             <select class="genero-filtro" id = "genero-filtro">
                 {foreach from=$categorias item=cat}
                     <option value={$cat.id}>{$cat.nombre}</option>
@@ -46,11 +55,11 @@
             <input id = "buscar" type="button" value="Buscar">
         </div>                                                                                                                                                                           
         <div id="productos">
-            <h3>{"Productos"}</h3>
-            {foreach from=$productos item=prod}
-                <h3>asd</h3>
-                {include file="tarjeta_producto.tpl" prod=$prod}
-            {/foreach}
+
+        </div>
+
+        <div id="productoDestacado">
+
         </div>
     </body>
 </html>   
